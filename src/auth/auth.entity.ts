@@ -6,7 +6,7 @@ export class Auth {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, (user) => user.id)
     user: User;
 
     @Column()

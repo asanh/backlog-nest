@@ -13,7 +13,7 @@ export class AuthController {
     return await this.authService.registration(data);
   }
 
-  @Post('by-token')
+  @Post('user-by-token')
   @UseGuards(AuthGuard)
   async userByToken(@Body() data: { token: string }): Promise<UserResponseDto> {
     return await this.authService.findUserByToken(data.token);

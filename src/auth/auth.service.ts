@@ -8,6 +8,7 @@ import * as crypto from 'crypto';
 import {AuthResponseDto} from "./dto/auth-response.dto";
 import {UserService} from "../user/user.service";
 import {UserRequestDto} from "../user/dto/user-request.dto";
+import {UserResponseDto} from "../user/dto/user-response.dto";
 
 @Injectable()
 export class AuthService {
@@ -27,11 +28,15 @@ export class AuthService {
     }
 
     async findOne(token: string): Promise<Auth> {
-        return await this.authRepository.findOneBy({ token: token });
+        return await this.authRepository.findOne({
+            where: { token: token },
+            relations: ['user']
+        });
     }
 
-    async findUserByToken(token: string): Promise<User> {
-        const auth = await this.authRepository.findOneBy({ token: token });
+    async findUserByToken(token: string): Promise<UserResponseDto> {
+        const auth = await this.findOne(token);
+        delete auth.user.password;
         return auth.user;
     }
 
@@ -60,7 +65,7 @@ export class AuthService {
     async auth(userId: number): Promise<AuthResponseDto> {
         const auth = new Auth();
         auth.user = await this.userService.findOne(userId);
-        auth.date = new Date().toLocaleString();
+        auth.date = new Date().toDateString();
         auth.token = crypto.randomBytes(20).toString('hex');
 
         const {token, user} = await this.authRepository.save(auth);
@@ -69,13 +74,12 @@ export class AuthService {
 
     async validateToken(token: string): Promise<boolean> {
         const auth = await this.findOne(token);
-
         if (auth) {
             const datesDiff = new Date().getTime() - new Date(auth.date).getTime();
             const daysSinceLastUsed = Math.ceil(datesDiff / (1000 * 3600 *  24));
 
             if (daysSinceLastUsed < 14) {
-                auth.date = new Date().toLocaleString();
+                auth.date = new Date().toDateString();
                 await this.putOne(token, auth);
 
                 this.user = await this.userService.findOne(auth.user.id);

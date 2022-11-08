@@ -1,5 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {UserStateEnum} from "./user-state.enum";
+import {Auth} from "../../auth/auth.entity";
 
 @Entity()
 export class User {
@@ -17,4 +18,7 @@ export class User {
 
     @Column({ default: UserStateEnum.Active })
     state: UserStateEnum;
+
+    @OneToMany(() => Auth, (auth) => auth.user)
+    auths: Auth[];
 }
