@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Genre} from "../../genre/entities/genre.entity";
 
 @Entity()
 export class Game {
@@ -10,4 +11,8 @@ export class Game {
 
     @Column()
     img: string;
+
+    @ManyToMany(() => Genre)
+    @JoinTable()
+    genres: Genre[];
 }

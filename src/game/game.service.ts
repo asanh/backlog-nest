@@ -5,7 +5,6 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {Game} from "./entities/game.entity";
 import {AuthService} from "../auth/auth.service";
-import {User} from "../../dist/user/user.entity";
 
 @Injectable()
 export class GameService {
@@ -23,15 +22,21 @@ export class GameService {
   }
 
   async findAll() {
-    return this.authService.user.games.map(game => {
-      const result = new GameResponseDto();
-      Object.assign(result, game);
-      return result;
-    });
+    const result = [];
+    for (const game of this.authService.user.games) {
+      const gameDto = new GameResponseDto();
+      const gameWithRelations = await this.findOne(game.id);
+      Object.assign(gameDto, gameWithRelations);
+      result.push(gameDto);
+    }
+    return result;
   }
 
   async findOne(id: number) {
-    return await this.gameRepository.findOneBy({ id: id });
+    return await this.gameRepository.findOne({
+      where: {id: id},
+      relations: ['genres']
+    });
   }
 
   update(id: number, updateGameDto: GameResponseDto) {

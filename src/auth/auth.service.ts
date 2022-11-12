@@ -36,7 +36,7 @@ export class AuthService {
 
     async findUserByToken(token: string): Promise<UserResponseDto> {
         const auth = await this.findOne(token);
-        const user = await this.userService.findOne(auth.user.id);
+        const user = await this.userService.findOneWithoutRelations(auth.user.id);
         delete user.password;
         return user;
     }

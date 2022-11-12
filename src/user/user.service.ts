@@ -33,6 +33,12 @@ export class UserService {
     });
   }
 
+  async findOneWithoutRelations(id: number) {
+    return await this.usersRepository.findOne({
+      where: { id: id },
+    });
+  }
+
   async findOneByEmail(email: string) {
     return await this.usersRepository.findOneBy({ email: email });
   }
