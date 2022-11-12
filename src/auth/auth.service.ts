@@ -36,8 +36,9 @@ export class AuthService {
 
     async findUserByToken(token: string): Promise<UserResponseDto> {
         const auth = await this.findOne(token);
-        delete auth.user.password;
-        return auth.user;
+        const user = await this.userService.findOne(auth.user.id);
+        delete user.password;
+        return user;
     }
 
     async putOne(token: string, data: Auth): Promise<Auth> {

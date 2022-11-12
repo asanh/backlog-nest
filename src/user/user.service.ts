@@ -27,7 +27,10 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.usersRepository.findOneBy({ id: id });
+    return await this.usersRepository.findOne({
+      where: { id: id },
+      relations: ['games']
+    });
   }
 
   async findOneByEmail(email: string) {

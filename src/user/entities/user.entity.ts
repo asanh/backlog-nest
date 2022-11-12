@@ -1,6 +1,7 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {UserStateEnum} from "./user-state.enum";
 import {Auth} from "../../auth/auth.entity";
+import {Game} from "../../game/entities/game.entity";
 
 @Entity()
 export class User {
@@ -13,7 +14,7 @@ export class User {
     @Column()
     password: string;
 
-    @Column({ default: 'User' })
+    @Column()
     name: string;
 
     @Column({ default: UserStateEnum.Active })
@@ -21,4 +22,8 @@ export class User {
 
     @OneToMany(() => Auth, (auth) => auth.user)
     auths: Auth[];
+
+    @ManyToMany(() => Game)
+    @JoinTable()
+    games: Game[];
 }
