@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {Module} from '@nestjs/common';
+import {AppController} from './app.controller';
+import {AppService} from './app.service';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {AuthModule} from "../auth/auth.module";
@@ -15,30 +15,35 @@ import {GameModule} from "../game/game.module";
 import {GenreModule} from "../genre/genre.module";
 import {Genre} from "../genre/entities/genre.entity";
 import {GenreService} from "../genre/genre.service";
+import {Platform} from "../platform/entities/platform.entity";
+import {PlatformModule} from "../platform/platform.module";
+import {PlatformService} from "../platform/platform.service";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule, AuthModule, UserModule, GameModule, GenreModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: +configService.get<number>('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        entities: [Auth, User, Game, Genre],
-        synchronize: true,
-      }),
-      inject: [ConfigService],
-    }),
-    UserModule,
-    AuthModule,
-    GameModule,
-    GenreModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService, AuthService, UserService, GameService, GenreService],
+    imports: [
+        ConfigModule.forRoot({isGlobal: true}),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule, AuthModule, UserModule, GameModule, GenreModule],
+            useFactory: (configService: ConfigService) => ({
+                type: 'postgres',
+                host: configService.get('DB_HOST'),
+                port: +configService.get<number>('DB_PORT'),
+                username: configService.get('DB_USERNAME'),
+                password: configService.get('DB_PASSWORD'),
+                database: configService.get('DB_NAME'),
+                entities: [Auth, User, Game, Genre, Platform],
+                synchronize: true,
+            }),
+            inject: [ConfigService],
+        }),
+        UserModule,
+        AuthModule,
+        GameModule,
+        GenreModule,
+        PlatformModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService, AuthService, UserService, GameService, GenreService, PlatformService],
 })
-export class AppModule {}
+export class AppModule {
+}
