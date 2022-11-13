@@ -18,12 +18,22 @@ import {GenreService} from "../genre/genre.service";
 import {Platform} from "../platform/entities/platform.entity";
 import {PlatformModule} from "../platform/platform.module";
 import {PlatformService} from "../platform/platform.service";
+import {PlaythroughModule} from "../playthrough/playthrough.module";
+import {Playthrough} from "../playthrough/entities/playthrough.entity";
+import {PlaythroughService} from "../playthrough/playthrough.service";
 
 @Module({
     imports: [
         ConfigModule.forRoot({isGlobal: true}),
         TypeOrmModule.forRootAsync({
-            imports: [ConfigModule, AuthModule, UserModule, GameModule, GenreModule],
+            imports: [
+                ConfigModule,
+                AuthModule,
+                UserModule,
+                GameModule,
+                GenreModule,
+                PlaythroughModule
+            ],
             useFactory: (configService: ConfigService) => ({
                 type: 'postgres',
                 host: configService.get('DB_HOST'),
@@ -31,7 +41,14 @@ import {PlatformService} from "../platform/platform.service";
                 username: configService.get('DB_USERNAME'),
                 password: configService.get('DB_PASSWORD'),
                 database: configService.get('DB_NAME'),
-                entities: [Auth, User, Game, Genre, Platform],
+                entities: [
+                    Auth,
+                    User,
+                    Game,
+                    Genre,
+                    Platform,
+                    Playthrough
+                ],
                 synchronize: true,
             }),
             inject: [ConfigService],
@@ -41,9 +58,18 @@ import {PlatformService} from "../platform/platform.service";
         GameModule,
         GenreModule,
         PlatformModule,
+        PlaythroughModule
     ],
     controllers: [AppController],
-    providers: [AppService, AuthService, UserService, GameService, GenreService, PlatformService],
+    providers: [
+        AppService,
+        AuthService,
+        UserService,
+        GameService,
+        GenreService,
+        PlatformService,
+        PlaythroughService
+    ],
 })
 export class AppModule {
 }

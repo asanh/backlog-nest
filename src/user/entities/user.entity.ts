@@ -2,6 +2,7 @@ import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn
 import {UserStateEnum} from "./user-state.enum";
 import {Auth} from "../../auth/auth.entity";
 import {Game} from "../../game/entities/game.entity";
+import {Playthrough} from "../../playthrough/entities/playthrough.entity";
 
 @Entity()
 export class User {
@@ -26,4 +27,7 @@ export class User {
     @ManyToMany(() => Game)
     @JoinTable()
     games: Game[];
+
+    @OneToMany(() => Playthrough, (playthrough) => playthrough.user)
+    playthroughs: Playthrough[];
 }
