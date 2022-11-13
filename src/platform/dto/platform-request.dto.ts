@@ -1,1 +1,3 @@
-export class PlatformRequestDto {}
+export class PlatformRequestDto {
+    name: string;
+}

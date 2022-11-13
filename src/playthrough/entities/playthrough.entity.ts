@@ -28,7 +28,7 @@ export class Playthrough {
     notes: string;
 
     @Column({ type: 'date', nullable: true })
-    completed_on: string;
+    completedOn: string;
 
     @ManyToOne(() => User, (user) => user.playthroughs)
     user: User;

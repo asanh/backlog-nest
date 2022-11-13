@@ -5,12 +5,14 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {Game} from "./entities/game.entity";
 import {AuthService} from "../auth/auth.service";
+import {PlaythroughService} from "../playthrough/playthrough.service";
 
 @Injectable()
 export class GameService {
   constructor(
       @InjectRepository(Game) private gameRepository: Repository<Game>,
       private authService: AuthService,
+      private playthroughService: PlaythroughService
   ) {
   }
 
@@ -21,7 +23,7 @@ export class GameService {
     return await this.gameRepository.save(game);
   }
 
-  async findAll() {
+  async findAll(): Promise<GameResponseDto[]> {
     const result = [];
     for (const game of this.authService.user.games) {
       const gameDto = new GameResponseDto();
@@ -32,11 +34,18 @@ export class GameService {
     return result;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<GameResponseDto> {
+    const result = new GameResponseDto();
     const game = await this.gameRepository.findOne({
       where: {id: id},
       relations: ['genres','platforms']
     });
+    Object.assign(result, game);
+    result.playthrough = await this.playthroughService.findOneByGameAndUser(
+        game.id,
+        this.authService.user.id
+    );
+    return result;
   }
 
   update(id: number, updateGameDto: GameResponseDto) {

@@ -19,7 +19,7 @@ export class Game {
     genres: Genre[];
 
     @Column({ nullable: true })
-    how_long_to_beat: string;
+    howLongToBeat: string;
 
     @ManyToMany(() => Platform)
     @JoinTable()
@@ -32,7 +32,7 @@ export class Game {
     publisher: string;
 
     @Column({ type: 'date', nullable: true })
-    release_date: string;
+    releaseDate: string;
 
     @OneToMany(() => Playthrough, (playthrough) => playthrough.game)
     playthroughs: Playthrough[];
